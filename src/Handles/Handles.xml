@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="Handles.widget.Handles" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>Handles</name>
+    <description>The description of this widget.</description>
+
+    <icon />
+
+    <properties>
+      <property key="sliderMin" type="integer" required="true" defaultValue="0">
+          <caption>Slider Minimum</caption>
+          <category>Slider Settings</category>
+          <description>The minimum value of the slider (integer).</description>
+      </property>
+      <property key="sliderMax" type="integer" required="true" defaultValue="100">
+          <caption>Slider Maximum</caption>
+          <category>Slider Settings</category>
+          <description>The maximum value of the slider (integer).</description>
+      </property>
+      <property key="sliderStep" type="integer" required="true" defaultValue="5">
+          <caption>Slider Step</caption>
+          <category>Slider Settings</category>
+          <description>The size of the interval between slider steps.</description>
+      </property>
+      <property key="handleAttr0" type="attribute">
+          <caption>Lower Handle</caption>
+          <category>Slider Settings</category>
+          <description>Entity Attribute (decimal) coupled with the lower handle of the slider.</description>
+          <attributeTypes>
+              <attributeType name="Decimal" />
+          </attributeTypes>
+      </property>
+      <property key="handleAttr1" type="attribute">
+          <caption>Upper Handle</caption>
+          <category>Slider Settings</category>
+          <description>Entity Attribute (decimal) coupled with the upper handle of the slider.</description>
+          <attributeTypes>
+              <attributeType name="Decimal" />
+          </attributeTypes>
+      </property>
+    </properties>
+</widget>

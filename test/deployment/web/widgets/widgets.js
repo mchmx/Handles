@@ -1,0 +1,1 @@
+﻿define(["Handles/widget/Handles"], {});
