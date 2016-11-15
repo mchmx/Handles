@@ -92,6 +92,7 @@
 }
 .noUi-vertical {
 	width: 18px;
+  height: 400px;
 }
 .noUi-vertical .noUi-handle {
 	width: 28px;

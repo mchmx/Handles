@@ -1,7 +1,7 @@
-Buildfile: C:\Users\mch\Desktop\Widgeting\Handles\test\deployment\build_core.xml
+Buildfile: C:\Users\mch\Documents\GitHub\Handles\test\deployment\build_core.xml
 
 deploy:
-    [unzip] Expanding: C:\Program Files\Mendix\5.19.0\modeler\deployment.mxz into C:\Users\mch\Desktop\Widgeting\Handles\test\deployment
+    [unzip] Expanding: C:\Program Files\Mendix\5.19.0\modeler\deployment.mxz into C:\Users\mch\Documents\GitHub\Handles\test\deployment
 
 BUILD SUCCESSFUL
 Total time: 0 seconds

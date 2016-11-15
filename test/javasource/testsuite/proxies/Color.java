@@ -28,7 +28,9 @@ public class Color
 		IsPrimary("IsPrimary"),
 		ColorCode("ColorCode"),
 		RangeMin("RangeMin"),
-		RangeMax("RangeMax");
+		RangeMax("RangeMax"),
+		Color_Entity("TestSuite.Color_Entity"),
+		Entity_3_Color("TestSuite.Entity_3_Color");
 
 		private java.lang.String metaName;
 
@@ -82,6 +84,14 @@ public class Color
 	{
 		com.mendix.systemwideinterfaces.core.IMendixObject mendixObject = com.mendix.core.Core.retrieveId(context, mendixIdentifier);
 		return testsuite.proxies.Color.initialize(context, mendixObject);
+	}
+
+	public static java.util.List<testsuite.proxies.Color> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
+	{
+		java.util.List<testsuite.proxies.Color> result = new java.util.ArrayList<testsuite.proxies.Color>();
+		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//TestSuite.Color" + xpathConstraint))
+			result.add(testsuite.proxies.Color.initialize(context, obj));
+		return result;
 	}
 
 	/**
@@ -329,6 +339,95 @@ public class Color
 	public final void setRangeMax(com.mendix.systemwideinterfaces.core.IContext context, java.math.BigDecimal rangemax)
 	{
 		getMendixObject().setValue(context, MemberNames.RangeMax.toString(), rangemax);
+	}
+
+	/**
+	 * @return value of Color_Entity
+	 */
+	public final testsuite.proxies.Entity getColor_Entity() throws com.mendix.core.CoreException
+	{
+		return getColor_Entity(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of Color_Entity
+	 */
+	public final testsuite.proxies.Entity getColor_Entity(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
+	{
+		testsuite.proxies.Entity result = null;
+		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.Color_Entity.toString());
+		if (identifier != null)
+			result = testsuite.proxies.Entity.load(context, identifier);
+		return result;
+	}
+
+	/**
+	 * Set value of Color_Entity
+	 * @param color_entity
+	 */
+	public final void setColor_Entity(testsuite.proxies.Entity color_entity)
+	{
+		setColor_Entity(getContext(), color_entity);
+	}
+
+	/**
+	 * Set value of Color_Entity
+	 * @param context
+	 * @param color_entity
+	 */
+	public final void setColor_Entity(com.mendix.systemwideinterfaces.core.IContext context, testsuite.proxies.Entity color_entity)
+	{
+		if (color_entity == null)
+			getMendixObject().setValue(context, MemberNames.Color_Entity.toString(), null);
+		else
+			getMendixObject().setValue(context, MemberNames.Color_Entity.toString(), color_entity.getMendixObject().getId());
+	}
+
+	/**
+	 * @return value of Entity_3_Color
+	 */
+	public final java.util.List<testsuite.proxies.Entity_3> getEntity_3_Color() throws com.mendix.core.CoreException
+	{
+		return getEntity_3_Color(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of Entity_3_Color
+	 */
+	@SuppressWarnings("unchecked")
+	public final java.util.List<testsuite.proxies.Entity_3> getEntity_3_Color(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
+	{
+		java.util.List<testsuite.proxies.Entity_3> result = new java.util.ArrayList<testsuite.proxies.Entity_3>();
+		Object valueObject = getMendixObject().getValue(context, MemberNames.Entity_3_Color.toString());
+		if (valueObject == null)
+			return result;
+		for (com.mendix.systemwideinterfaces.core.IMendixObject mendixObject : com.mendix.core.Core.retrieveIdList(context, (java.util.List<com.mendix.systemwideinterfaces.core.IMendixIdentifier>) valueObject))
+			result.add(testsuite.proxies.Entity_3.initialize(context, mendixObject));
+		return result;
+	}
+
+	/**
+	 * Set value of Entity_3_Color
+	 * @param entity_3_color
+	 */
+	public final void setEntity_3_Color(java.util.List<testsuite.proxies.Entity_3> entity_3_color)
+	{
+		setEntity_3_Color(getContext(), entity_3_color);
+	}
+
+	/**
+	 * Set value of Entity_3_Color
+	 * @param context
+	 * @param entity_3_color
+	 */
+	public final void setEntity_3_Color(com.mendix.systemwideinterfaces.core.IContext context, java.util.List<testsuite.proxies.Entity_3> entity_3_color)
+	{
+		java.util.List<com.mendix.systemwideinterfaces.core.IMendixIdentifier> identifiers = new java.util.ArrayList<com.mendix.systemwideinterfaces.core.IMendixIdentifier>();
+		for (testsuite.proxies.Entity_3 proxyObject : entity_3_color)
+			identifiers.add(proxyObject.getMendixObject().getId());
+		getMendixObject().setValue(context, MemberNames.Entity_3_Color.toString(), identifiers);
 	}
 
 	/**

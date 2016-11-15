@@ -33,10 +33,14 @@ define([
     "dojo/text",
     "dojo/html",
     "dojo/_base/event",
+    "dojo/query",
 
     "Handles/lib/nouislider",
     "dojo/text!Handles/widget/template/Handles.html"
 ], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent,
+
+    dojoQuery,
+
     noUiSlider, widgetTemplate) {
     "use strict";
 
@@ -54,12 +58,21 @@ define([
         sliderStep : "",
         handleAttr0 : "",
         handleAttr1 : "",
+        testProperty : "",
+        enforceMargin : false,
+        marginSize : null,
+        enforceLimit : false,
+        limitSize : null,
+        direction : "",
+        orientation : "",
+        toolTips : false,
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
         _contextObj: null,
         _alertDiv: null,
         _readOnly: false,
+        _sliderSettings: null,
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
@@ -71,13 +84,22 @@ define([
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
 
+            this._sliderSettings = {
+              start: [this.sliderMax * 0.25, this.sliderMax * 0.75],
+              step: this.sliderStep,
+              connect: true,
+              range: { 'min': this.sliderMin, 'max': this.sliderMax },
+              behaviour: 'drag-tap'
+            };
+
             this._updateRendering();
-            noUiSlider.create(this.domTarget, {
-               start: [this.sliderMax * 0.25, this.sliderMax * 0.75],
-               step: this.sliderStep,
-               connect: true,
-               range: { 'min': this.sliderMin, 'max': this.sliderMax }
-             });
+
+            this._setDirectionAndOrientation();
+            this._setMarginAndLimit();
+            this._toggleTooltips();
+            this._buildPips();
+
+            noUiSlider.create(this.domTarget, this._sliderSettings);
 
             this._setupEvents();
         },
@@ -92,7 +114,7 @@ define([
 
             if(this._contextObj.get(this.handleAttr0) == 0 && this._contextObj.get(this.handleAttr1) == 0) {
               this._contextObj.set(this.handleAttr0, this.domTarget.noUiSlider.get()[0]);
-              this._contextObj.set(this.handleAttr1, this.domTarget.noUiSlider.get()[1]); 
+              this._contextObj.set(this.handleAttr1, this.domTarget.noUiSlider.get()[1]);
             } else {
               this.domTarget.noUiSlider.set( [this._contextObj.get(this.handleAttr0), this._contextObj.get(this.handleAttr1)] );
             }
@@ -132,7 +154,6 @@ define([
             logger.debug(this.id + "._setupEvents");
             var self = this;
             self.domTarget.noUiSlider.on('slide', function() {
-              console.log("listener is firing");
               self._contextObj.set(self.handleAttr0, self.domTarget.noUiSlider.get()[0]);
               self._contextObj.set(self.handleAttr1, self.domTarget.noUiSlider.get()[1]);
             });
@@ -225,7 +246,49 @@ define([
 
                 this._handles = [ objectHandle, attrHandle, validationHandle ];
             }
+        },
+
+        // Set the direction and orientation of the sliderMin
+        _setDirectionAndOrientation: function() {
+          console.log('set direction and orientation');
+          if (this.direction == 'rtl') {
+            this._sliderSettings.direction = this.direction
+          };
+          if (this.orientation == 'vertical') {
+            this._sliderSettings.orientation = this.orientation
+          };
+        },
+
+        // Set the margin and limit (minimum and maximum separation between handles)
+        _setMarginAndLimit: function() {
+          console.log('set margin...')
+          if ( (this.enforceMargin && this.marginSize != null) ) {
+            this._sliderSettings.margin = this.marginSize
+          };
+          if ( (this.enforceLimit && this.limitSize != null) ) {
+            this._sliderSettings.limit = this.limitSize
+          };
+        },
+
+        // Toogle display of values on the handles
+        _toggleTooltips: function() {
+          console.log('set tool tips...')
+          if ( (this.toolTips) ) {
+            this._sliderSettings.tooltips = [true, true];
+          }
+        },
+
+        // If steps are >= 25% of the range, render pips
+        _buildPips: function() {
+          console.log('build pips...')
+          if ( (this.sliderMax-this.sliderMin) / this.sliderStep <= 4 ) {
+            this._sliderSettings.pips = {
+              mode: 'steps', density: this.sliderStep
+            }
+          }
         }
+
+
     });
 });
 

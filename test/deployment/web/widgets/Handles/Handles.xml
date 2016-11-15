@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <widget id="Handles.widget.Handles" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
     <name>Handles</name>
-    <description>The description of this widget.</description>
+    <description>Slider with two (or more handles)</description>
 
     <icon />
 
@@ -22,7 +22,7 @@
           <description>The size of the interval between slider steps.</description>
       </property>
       <property key="handleAttr0" type="attribute">
-          <caption>Lower Handle</caption>
+          <caption>Lower Handle Attribute</caption>
           <category>Slider Settings</category>
           <description>Entity Attribute (decimal) coupled with the lower handle of the slider.</description>
           <attributeTypes>
@@ -30,12 +30,60 @@
           </attributeTypes>
       </property>
       <property key="handleAttr1" type="attribute">
-          <caption>Upper Handle</caption>
+          <caption>Upper Handle Attribute</caption>
           <category>Slider Settings</category>
           <description>Entity Attribute (decimal) coupled with the upper handle of the slider.</description>
           <attributeTypes>
               <attributeType name="Decimal" />
           </attributeTypes>
       </property>
+      <property key="toolTips" type="boolean" defaultValue="false">
+          <caption>Display Value Labels</caption>
+          <category>Slider Settings</category>
+          <description>Set true to display the handle's value in a label.</description>
+      </property>
+      <property key="direction" type="enumeration" defaultValue="ltr">
+          <caption>Direction</caption>
+          <category>Slider Settings</category>
+          <description>Configure the slider to increase left-to-right/top-to-bottom or right-to-left/bottom-to-top.</description>
+          <enumerationValues>
+              <enumerationValue key="ltr">Left-to-right / Top-to-bottom</enumerationValue>
+              <enumerationValue key="rtl">Right-to-left / Bottom-to-top</enumerationValue>
+          </enumerationValues>
+      </property>
+      <property key="orientation" type="enumeration" defaultValue="horizontal">
+          <caption>Orientation</caption>
+          <category>Slider Settings</category>
+          <description>Configure the orientation of the slider.
+If Vertical, be sure to select the correct Direction value for your purposes.
+Also if Vertical, height must be manually set in the widget css (class .noUi-vertical)</description>
+          <enumerationValues>
+              <enumerationValue key="horizontal">Horizontal</enumerationValue>
+              <enumerationValue key="vertical">Vertical</enumerationValue>
+          </enumerationValues>
+      </property>
+
+      <property key="enforceMargin" type="boolean" defaultValue="false">
+          <caption>Enforce Minimum Range</caption>
+          <category>Advanced Settings</category>
+          <description>Set true to enforce a minimum size for the range between handles</description>
+      </property>
+      <property key="marginSize" type="integer" defaultValue="25">
+          <caption>Minimum Range</caption>
+          <category>Advanced Settings</category>
+          <description>Size of the minimum range; takes effect only if Enforce Minimum Range is true.</description>
+      </property>
+      <property key="enforceLimit" type="boolean" defaultValue="false">
+          <caption>Enforce Maximum Range</caption>
+          <category>Advanced Settings</category>
+          <description>Set true to enforce a maximum size for the range between handles</description>
+      </property>
+      <property key="limitSize" type="integer" defaultValue="25">
+          <caption>Maximum Range</caption>
+          <category>Advanced Settings</category>
+          <description>Size of the maximum range; takes effect only if Enforce Maximum Range is true.</description>
+      </property>
+
+
     </properties>
 </widget>
