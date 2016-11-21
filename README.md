@@ -1,90 +1,28 @@
-# App Store Widget Boilerplate
+#Handles
+This widget is a slider with two handles (thus the name). The lower and upper handles capture separate values (on an entity). Use this widget to visually define a range of values.
+The code base for this is described at https://refreshless.com/nouislider/ .
 
-This boilerplate gives you all you need to start a new custom widget for Mendix
-5.6.0 and up.
+##Typical usage scenario
+Someone is shopping for shoes and looking for products in the $50 to $200 range.
 
-The boilerplate contains:
-- Directory structure
-- Readme.md
-- License
-- JavaScript source
-- XSD for package.xml, to configure properties of the widget, visible inside the
- Mendix business modeler
+##Features and limitations
+- Change slider values by dragging handles or clicking on the bar
+- Dragging the bar between the handles will drag the fixed range
+- The slider can be contiuous or have fixed increments
+- Horizontal or vertical rendering, with the slider's low and high ends configurable (i.e. increasing left to right or right to left)
+- Slider handle values can be displayed
+- Enforce a minimum or maximum range
 
-## Contributing
-
-For more information on contributing to this repository visit [Contributing to a GitHub repository](https://world.mendix.com/display/howto50/Contributing+to+a+GitHub+repository)!
-
-## Typical usage scenario
-
-Use this template to start building a widget for Mendix 5.
-Alter this README.md file and describe what your widget does.
- 
-## Description
-
-The javascript inside the widget has examples of:
-- Using CSS within a widget
-- Using templating
-- Loading external library's
-- DOM manipulation
-- Event attaching
-- Loading data
-- Executing microflow and sending data
-- Working with the context object, which is an object in the current context
-(e.g. the one displayed in a DataView).
-
-### Dojo AMD module list
-
-The JavaScript contains an extensive list of modules that may be used to build a
-widget. It is best to reduce this list to what is actually used. Use JSHint to
-help identify errors and problems. 
-
-** Be sure to keep the module name array and the parameter list of the anonymous
-function below the module list in sync! **
-
-The following modules are necessary for all widgets:
-- dojo/_base/declare
-- mxui/widget/_WidgetBase
-- dijit/_Widget
-
-If your widget does not use an HTML template:
-- Remove dijit/_TemplatedMixin from the module list
-- Remove _Templated from the parameter list of the anonymous function below the module list
-- Remove _Templated from the parameter list of the declare call
-- Remove the templates folder
-
-If your widget does not need jQuery:
-- Remove WidgetName/widget/lib/jquery from the module list
-- Remove _jQuery from the parameter list of the anonymous function below the module list
-- Remove _jQuery from the parameter list of the declare call
-- Remove jquery.js from src\WidgetName\widget\lib\ Or remove the lib folder if you don't include external libraries in the widget.
-
-### AMD caveats
-Working with jQuery can be difficult due to the fact that jquery does not adhere to the AMD standard correctly. Check out [Pull Request #13](https://github.com/mendix/AppStoreWidgetBoilerplate/pull/13) or the [Dojo AMD documentation](http://dojotoolkit.org/documentation/tutorials/1.10/modules/index.html) for details.
-
-## Migrating a widget to Dojo AMD
-
-A widget that uses Dojo AMD may not refer to functions like *dojo.forEach* etc. 
-All necessary modules must be declared on the module list at the top of the source.
-
-Replacing all 'old' Dojo calls in an existing source can be a bit of a pain.
-
-Here is a list of commonly used functions and their new counterpart:
-
-Old | New
----------- |---------- 
-mxui.dom              | domMx
-dojo.byId             | dom.byId
-dojo.query            | document.querySelector
-dojo.forEach          | dojoArray.forEach
-dojo.hitch            | lang.hitch
-dojo.addClass         | domClass.add
-dojo.removeClass      | domClass.remove
-dojo.hasClass         | domClass.contains
-dojo.replaceClass     | domClass.replace
-dojo.empty            | domConstruct.empty
-dojo.place            | domConstruct.place 
-dojo.on               | on
-dojo.window           | win
-  
-The referenced modules are in the module list of the boilerplate JavaScript.
+##Configuration
+###Slider Settings
+- Slider Minimum: Minimum value of the total range of the slider
+- Slider Maximum: Maximum value of the total range of the slider
+- Lower Handle Attribute: Attribute of the context entity that will capture the value of the lower handle
+- Upper Handle Attribute: Attribute of the context entity that will capture the value of the upper handle
+- Slider Step: Value to increment the slider by when dragging. For example, if set to 5, the only available values will be 0, 5, 10, 15... etc. The slider will snap to these values. Leave at 0 for default "continuous" behavior.
+- Direction: Direction that the slider values increase.
+- Orientation. Horizontal or Vertical slider. If vertical, the height property of the CSS class ".noUi-vertical" can control the height of the bar (by default, 300 px).
+- Display Value Label: If true, the value of each handle with be displayed adjacent to the handle.
+###Advanced Settings
+- Enforce Minimum Range / Minimum Range: If True, the gap between the handles will be no less than the value of Minimum Range.
+- Enforce Maximum Range / Maximum Range: If True, the gap between the handles will be no less than the value of Maximum Range.
