@@ -1,90 +1,37 @@
-# App Store Widget Boilerplate
+# HANDLES - A range slider with two handles
+HANDLES is a wrapper for the library found at https://refreshless.com/nouislider/. For the sake of functional specificity, widget functionality, just those functionalities that support a full featured two-handled slider have been implemented.
 
-This boilerplate gives you all you need to start a new custom widget for Mendix
-5.6.0 and up.
-
-The boilerplate contains:
-- Directory structure
-- Readme.md
-- License
-- JavaScript source
-- XSD for package.xml, to configure properties of the widget, visible inside the
- Mendix business modeler
-
-## Contributing
-
-For more information on contributing to this repository visit [Contributing to a GitHub repository](https://world.mendix.com/display/howto50/Contributing+to+a+GitHub+repository)!
+## Description
+This widget is a slider with two clickable, draggable handles. The upper and lower values, as well as visual orientation, can be configured. The bar itself is also clickable, and the nearest handle will slide to the location that was clicked.
 
 ## Typical usage scenario
-
-Use this template to start building a widget for Mendix 5.
-Alter this README.md file and describe what your widget does.
+- Set a heater to turn off at a certain maximum temperature, but to turn back on at a certain minimum temperature
+- When shopping, set a price range to find items you want to purchase
+- Narrow down a set of clients with income that falls within a target range
  
-## Description
+## Features and limitations
+- jQuery-independent code
+- Horizontal and vertical orientations
+- Configurable minimum, maximum, and step size
+- The slider bar can also be dragged to preserve the size of the gap between the handles while changing the handle values
+- Display values on handles if desired
 
-The javascript inside the widget has examples of:
-- Using CSS within a widget
-- Using templating
-- Loading external library's
-- DOM manipulation
-- Event attaching
-- Loading data
-- Executing microflow and sending data
-- Working with the context object, which is an object in the current context
-(e.g. the one displayed in a DataView).
+## Dependencies
+- Mendix modeler version 5.19
+- A context entity with 2 decimal attributes
 
-### Dojo AMD module list
-
-The JavaScript contains an extensive list of modules that may be used to build a
-widget. It is best to reduce this list to what is actually used. Use JSHint to
-help identify errors and problems. 
-
-** Be sure to keep the module name array and the parameter list of the anonymous
-function below the module list in sync! **
-
-The following modules are necessary for all widgets:
-- dojo/_base/declare
-- mxui/widget/_WidgetBase
-- dijit/_Widget
-
-If your widget does not use an HTML template:
-- Remove dijit/_TemplatedMixin from the module list
-- Remove _Templated from the parameter list of the anonymous function below the module list
-- Remove _Templated from the parameter list of the declare call
-- Remove the templates folder
-
-If your widget does not need jQuery:
-- Remove WidgetName/widget/lib/jquery from the module list
-- Remove _jQuery from the parameter list of the anonymous function below the module list
-- Remove _jQuery from the parameter list of the declare call
-- Remove jquery.js from src\WidgetName\widget\lib\ Or remove the lib folder if you don't include external libraries in the widget.
-
-### AMD caveats
-Working with jQuery can be difficult due to the fact that jquery does not adhere to the AMD standard correctly. Check out [Pull Request #13](https://github.com/mendix/AppStoreWidgetBoilerplate/pull/13) or the [Dojo AMD documentation](http://dojotoolkit.org/documentation/tutorials/1.10/modules/index.html) for details.
-
-## Migrating a widget to Dojo AMD
-
-A widget that uses Dojo AMD may not refer to functions like *dojo.forEach* etc. 
-All necessary modules must be declared on the module list at the top of the source.
-
-Replacing all 'old' Dojo calls in an existing source can be a bit of a pain.
-
-Here is a list of commonly used functions and their new counterpart:
-
-Old | New
----------- |---------- 
-mxui.dom              | domMx
-dojo.byId             | dom.byId
-dojo.query            | document.querySelector
-dojo.forEach          | dojoArray.forEach
-dojo.hitch            | lang.hitch
-dojo.addClass         | domClass.add
-dojo.removeClass      | domClass.remove
-dojo.hasClass         | domClass.contains
-dojo.replaceClass     | domClass.replace
-dojo.empty            | domConstruct.empty
-dojo.place            | domConstruct.place 
-dojo.on               | on
-dojo.window           | win
-  
-The referenced modules are in the module list of the boilerplate JavaScript.
+## Configuration
+### Slider Settings
+- Slider Minimum: Integer value of the lowest possible value on the slider; default is 0
+- Slider Maximum: Integer value of the highest possible value on the slider; default is 100
+- Slider Step: Integer value of how much the slider should increment by; default is 5
+- Lower Handle Attribute: The attribute of the context entity that should capture the value of the lower handle
+- Upper Handle Attribute: The attribute of the context entity that should capture the value of the upper handle
+- Display Value Labels: If true, the value of the handle will be displayed on the handle; default is Yes
+- Direction: The direction that the values of the slider increase; correlates with the Orientation of the slider; default is Left-to-Right / Top-to-Bottom
+- Orientation: Whether the slider is horizontal or vertical; default is Horizontal
+### Advanced Settings
+- Enforce Minimum Range: Whether or not there is a minimum distance that the two handles must be apart, as defined by Minimum Range; default is No
+- Minimum Range: The size of the Minimum Range, if Enforce Minimum Range is set to Yes; default is 25
+- Enforce Maximum Range: Whether or not there is a maximum distance that the two handles must be apart, as defined by Maximum Range; default is No
+- Maximum Range: The size of the Maximum Range, if Enforce Maximum Range is set to Yes; default is 25
