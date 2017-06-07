@@ -37,7 +37,7 @@ define([
 
     "Handles/lib/nouislider",
     "dojo/text!Handles/widget/template/Handles.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent,
+], function(declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, dojoLang, dojoText, dojoHtml, dojoEvent,
 
     dojoQuery,
 
@@ -45,7 +45,7 @@ define([
     "use strict";
 
     // Declare widget's prototype.
-    return declare("Handles.widget.Handles", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("Handles.widget.Handles", [_WidgetBase, _TemplatedMixin], {
         // _TemplatedMixin will create our dom node using this HTML template.
         templateString: widgetTemplate,
 
@@ -53,19 +53,23 @@ define([
         domTarget: null,
 
         // Parameters configured in the Modeler.
-        sliderMin : "",
-        sliderMax : "",
-        sliderStep : "",
-        handleAttr0 : "",
-        handleAttr1 : "",
-        testProperty : "",
-        enforceMargin : false,
-        marginSize : null,
-        enforceLimit : false,
-        limitSize : null,
-        direction : "",
-        orientation : "",
-        toolTips : false,
+        twoHandles: false,
+        sliderMin: "",
+        sliderMax: "",
+        sliderStep: "",
+        handleAttr0: "",
+        handleAttr1: "",
+        testProperty: "",
+        bars: false,
+        enforceMargin: false,
+        marginSize: null,
+        enforceLimit: false,
+        limitSize: null,
+        direction: "",
+        orientation: "",
+        toolTips: false,
+        buildPips: false,
+        onChangeMF: "",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -75,26 +79,35 @@ define([
         _sliderSettings: null,
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
-        constructor: function () {
+        constructor: function() {
             logger.debug(this.id + ".constructor");
             this._handles = [];
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
-        postCreate: function () {
+        postCreate: function() {
             logger.debug(this.id + ".postCreate");
 
+            var startPositions = [0];
+            if (this.twoHandles) {
+                startPositions = [this.sliderMax * 0.25, this.sliderMax * 0.75];
+            }
+
             this._sliderSettings = {
-              start: [this.sliderMax * 0.25, this.sliderMax * 0.75],
-              step: this.sliderStep,
-              connect: true,
-              range: { 'min': this.sliderMin, 'max': this.sliderMax },
-              behaviour: 'drag-tap'
+                start: startPositions,
+                step: this.sliderStep,
+                range: {
+                    'min': this.sliderMin,
+                    'max': this.sliderMax
+                },
+                behaviour: 'drag-tap'
             };
+
 
             this._updateRendering();
 
             this._setDirectionAndOrientation();
+            this._setConnect();
             this._setMarginAndLimit();
             this._toggleTooltips();
             this._buildPips();
@@ -105,44 +118,53 @@ define([
         },
 
         // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
-        update: function (obj, callback) {
+        update: function(obj, callback) {
             logger.debug(this.id + ".update");
 
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback); // We're passing the callback to updateRendering to be called after DOM-manipulation
 
-            if(this._contextObj.get(this.handleAttr0) == 0 && this._contextObj.get(this.handleAttr1) == 0) {
-              this._contextObj.set(this.handleAttr0, this.domTarget.noUiSlider.get()[0]);
-              this._contextObj.set(this.handleAttr1, this.domTarget.noUiSlider.get()[1]);
+            if (this.twoHandles) {
+                if (this._contextObj.get(this.handleAttr0) == 0 && this._contextObj.get(this.handleAttr1) == 0) {
+                    this._contextObj.set(this.handleAttr0, this.domTarget.noUiSlider.get()[0]);
+                    this._contextObj.set(this.handleAttr1, this.domTarget.noUiSlider.get()[1]);
+                } else {
+                    this.domTarget.noUiSlider.set([this._contextObj.get(this.handleAttr0), this._contextObj.get(this.handleAttr1)]);
+                }
             } else {
-              this.domTarget.noUiSlider.set( [this._contextObj.get(this.handleAttr0), this._contextObj.get(this.handleAttr1)] );
+                if(this._contextObj.get(this.handleAttr0) == 0) {
+                    this._contextObj.set(this.handleAttr0, this.domTarget.noUiSlider.get());
+                } else {
+                    this.domTarget.noUiSlider.set( [this._contextObj.get(this.handleAttr0)] );
+                }
+
             }
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
-        enable: function () {
-          logger.debug(this.id + ".enable");
+        enable: function() {
+            logger.debug(this.id + ".enable");
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should disable editing. Implement to disable editing if widget is input widget.
-        disable: function () {
-          logger.debug(this.id + ".disable");
+        disable: function() {
+            logger.debug(this.id + ".disable");
         },
 
         // mxui.widget._WidgetBase.resize is called when the page's layout is recalculated. Implement to do sizing calculations. Prefer using CSS instead.
-        resize: function (box) {
-          logger.debug(this.id + ".resize");
+        resize: function(box) {
+            logger.debug(this.id + ".resize");
         },
 
         // mxui.widget._WidgetBase.uninitialize is called when the widget is destroyed. Implement to do special tear-down work.
-        uninitialize: function () {
-          logger.debug(this.id + ".uninitialize");
+        uninitialize: function() {
+            logger.debug(this.id + ".uninitialize");
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
         },
 
         // We want to stop events on a mobile device
-        _stopBubblingEventOnMobile: function (e) {
+        _stopBubblingEventOnMobile: function(e) {
             logger.debug(this.id + "._stopBubblingEventOnMobile");
             if (typeof document.ontouchstart !== "undefined") {
                 dojoEvent.stop(e);
@@ -150,17 +172,39 @@ define([
         },
 
         // Attach events to HTML dom elements
-        _setupEvents: function () {
+        _setupEvents: function() {
             logger.debug(this.id + "._setupEvents");
             var self = this;
             self.domTarget.noUiSlider.on('slide', function() {
-              self._contextObj.set(self.handleAttr0, self.domTarget.noUiSlider.get()[0]);
-              self._contextObj.set(self.handleAttr1, self.domTarget.noUiSlider.get()[1]);
+                self._contextObj.set(self.handleAttr0, self.domTarget.noUiSlider.get()[0]);
+                if (this.twoHandles) {
+                    self._contextObj.set(self.handleAttr1, self.domTarget.noUiSlider.get()[1]);
+                }
             });
+            console.log('hi' + this.onChangeMF)
+            if (this.onChangeMF) {
+                self.domTarget.noUiSlider.on('update', function() {
+                  if (self._contextObj != null) {
+                    mx.data.action({
+                        params: {
+                            applyto: "selection",
+                            actionname: "Questionnaire.SaveElement",
+                            guids: [self._contextObj.getGuid()]
+                        },
+                        callback: function (obj) {
+                            //TODO what to do when all is ok!
+                        },
+                        error: function(error) {
+                            //TODO error handling
+                        }
+                    }, this)
+                  }
+                });
+            }
         },
 
         // Rerender the interface.
-        _updateRendering: function (callback) {
+        _updateRendering: function(callback) {
             logger.debug(this.id + "._updateRendering");
 
             // Important to clear all validations!
@@ -171,7 +215,7 @@ define([
         },
 
         // Handle validations.
-        _handleValidation: function (validations) {
+        _handleValidation: function(validations) {
             logger.debug(this.id + "._handleValidation");
             this._clearValidations();
 
@@ -180,14 +224,14 @@ define([
         },
 
         // Clear validations.
-        _clearValidations: function () {
+        _clearValidations: function() {
             logger.debug(this.id + "._clearValidations");
             dojoConstruct.destroy(this._alertDiv);
             this._alertDiv = null;
         },
 
         // Show an error message.
-        _showError: function (message) {
+        _showError: function(message) {
             logger.debug(this.id + "._showError");
             if (this._alertDiv !== null) {
                 dojoHtml.set(this._alertDiv, message);
@@ -201,22 +245,22 @@ define([
         },
 
         // Add a validation.
-        _addValidation: function (message) {
+        _addValidation: function(message) {
             logger.debug(this.id + "._addValidation");
             this._showError(message);
         },
 
-        _unsubscribe: function () {
-          if (this._handles) {
-              dojoArray.forEach(this._handles, function (handle) {
-                  mx.data.unsubscribe(handle);
-              });
-              this._handles = [];
-          }
+        _unsubscribe: function() {
+            if (this._handles) {
+                dojoArray.forEach(this._handles, function(handle) {
+                    mx.data.unsubscribe(handle);
+                });
+                this._handles = [];
+            }
         },
 
         // Reset subscriptions.
-        _resetSubscriptions: function () {
+        _resetSubscriptions: function() {
             logger.debug(this.id + "._resetSubscriptions");
             // Release handles on previous object, if any.
             this._unsubscribe();
@@ -225,7 +269,7 @@ define([
             if (this._contextObj) {
                 var objectHandle = mx.data.subscribe({
                     guid: this._contextObj.getGuid(),
-                    callback: dojoLang.hitch(this, function (guid) {
+                    callback: dojoLang.hitch(this, function(guid) {
                         this._updateRendering();
                     })
                 });
@@ -233,7 +277,7 @@ define([
                 var attrHandle = mx.data.subscribe({
                     guid: this._contextObj.getGuid(),
                     attr: this.backgroundColor,
-                    callback: dojoLang.hitch(this, function (guid, attr, attrValue) {
+                    callback: dojoLang.hitch(this, function(guid, attr, attrValue) {
                         this._updateRendering();
                     })
                 });
@@ -244,51 +288,68 @@ define([
                     callback: dojoLang.hitch(this, this._handleValidation)
                 });
 
-                this._handles = [ objectHandle, attrHandle, validationHandle ];
+                this._handles = [objectHandle, attrHandle, validationHandle];
             }
         },
 
         // Set the direction and orientation of the sliderMin
         _setDirectionAndOrientation: function() {
-          console.log('set direction and orientation');
-          if (this.direction == 'rtl') {
-            this._sliderSettings.direction = this.direction
-          };
-          if (this.orientation == 'vertical') {
-            this._sliderSettings.orientation = this.orientation
-          };
+            console.log('set direction and orientation');
+            if (this.direction == 'rtl') {
+                this._sliderSettings.direction = this.direction
+            };
+            if (this.orientation == 'vertical') {
+                this._sliderSettings.orientation = this.orientation
+            };
+        },
+
+        // Set bar color visibility
+        _setConnect: function() {
+            console.log('set bar...')
+            if (this.bars) {
+                if (this.twoHandles) {
+                    this._sliderSettings.connect = true
+                } else {
+                    if (this.direction == 'rtl') {
+                        this._sliderSettings.connect = [false, true]
+                    } else {
+                        this._sliderSettings.connect = [true, false]
+                    }
+                }
+            }
         },
 
         // Set the margin and limit (minimum and maximum separation between handles)
         _setMarginAndLimit: function() {
-          console.log('set margin...')
-          if ( (this.enforceMargin && this.marginSize != null) ) {
-            this._sliderSettings.margin = this.marginSize
-          };
-          if ( (this.enforceLimit && this.limitSize != null) ) {
-            this._sliderSettings.limit = this.limitSize
-          };
+            console.log('set margin...')
+            if ((this.enforceMargin && this.marginSize != null)) {
+                this._sliderSettings.margin = this.marginSize
+            };
+            if ((this.enforceLimit && this.limitSize != null)) {
+                this._sliderSettings.limit = this.limitSize
+            };
         },
 
         // Toogle display of values on the handles
         _toggleTooltips: function() {
-          console.log('set tool tips...')
-          if ( (this.toolTips) ) {
-            this._sliderSettings.tooltips = [true, true];
-          }
+            console.log('set tool tips...')
+            if (this.toolTips) {
+                if (this.twoHandles) {
+                    this._sliderSettings.tooltips = [true, true];
+                } else {
+                    this._sliderSettings.tooltips = [true];
+                }
+            }
         },
 
-        // If steps are >= 25% of the range, render pips
+        // If steps are < 10% of the range, render pips
         _buildPips: function() {
-          console.log('build pips...')
-          if ( (this.sliderMax-this.sliderMin) / this.sliderStep <= 4 ) {
+            console.log('build pips...')
             this._sliderSettings.pips = {
-              mode: 'steps', density: this.sliderStep
+                mode: 'steps',
+                density: -5
             }
-          }
         }
-
-
     });
 });
 

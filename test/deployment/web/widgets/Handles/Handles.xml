@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <widget id="Handles.widget.Handles" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
     <name>Handles</name>
-    <description>Slider with two (or more handles)</description>
+    <description>Slider with one or two</description>
 
     <icon />
 
     <properties>
+      <property key="twoHandles" type="boolean" defaultValue="true">
+          <caption>Two Handles Slider</caption>
+          <category>Slider Settings</category>
+          <description>Set true for a two handle slider,
+false for a one handle slider (only the Lower Handle Attribute will be used).</description>
+      </property>
       <property key="sliderMin" type="integer" required="true" defaultValue="0">
           <caption>Slider Minimum</caption>
           <category>Slider Settings</category>
@@ -37,6 +43,11 @@
               <attributeType name="Decimal" />
           </attributeTypes>
       </property>
+      <property key="bars" type="boolean" defaultValue="true">
+          <caption>Color Bar</caption>
+          <category>Slider Settings</category>
+          <description>Set true to display a green bar on the for the selected value/range.</description>
+      </property>
       <property key="toolTips" type="boolean" defaultValue="false">
           <caption>Display Value Labels</caption>
           <category>Slider Settings</category>
@@ -62,6 +73,11 @@ Also if Vertical, height must be manually set in the widget css (class .noUi-ver
               <enumerationValue key="vertical">Vertical</enumerationValue>
           </enumerationValues>
       </property>
+      <property key="buildPips" type="boolean" defaultValue="true">
+          <caption>Build Pips</caption>
+          <category>Slider Settings</category>
+          <description>Set true to display slider values on the slider.</description>
+      </property>
 
       <property key="enforceMargin" type="boolean" defaultValue="false">
           <caption>Enforce Minimum Range</caption>
@@ -83,7 +99,12 @@ Also if Vertical, height must be manually set in the widget css (class .noUi-ver
           <category>Advanced Settings</category>
           <description>Size of the maximum range; takes effect only if Enforce Maximum Range is true.</description>
       </property>
-
+     <property key="onChangeMF" type="microflow" required="false">
+          <caption>On Change MF</caption>
+          <category>Advanced Settings</category>
+          <description>Microflow to execute on change.</description>
+          <returnType type="Void" />
+      </property>
 
     </properties>
 </widget>
